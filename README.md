@@ -1,4 +1,4 @@
-# Welcome to a demo for KEDA http Autoscaling with OpenServiceMesh
+# Welcome to a demo for KEDA http autoscaling with OpenServiceMesh
 Demo KEDA http autoscaling with OSM metrics and bookstore application. This will walk through the steps for doing it with an AKS (Azure Kubernetes Services) cluster and BYO Prometheus. It will also use the Contour Ingress Controller with OSM integration of Envoy.
 
 ### Deploy an Azure Kubernetes Cluster with azCLI
