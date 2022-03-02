@@ -104,6 +104,7 @@ myip="$(kubectl -n projectcontour describe svc -l app.kubernetes.io/component=en
 myip_dns=$myip$dns
 ```
 #### Create HTTPProxy and ingressBackend
+```
 kubectl apply -f - <<EOF
 apiVersion: projectcontour.io/v1
 kind: HTTPProxy
