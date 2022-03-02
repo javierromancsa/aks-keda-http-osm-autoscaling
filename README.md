@@ -26,7 +26,7 @@ kubectl get services -n kube-system --selector app.kubernetes.io/name=openservic
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 helm install prometheus \
-prometheus-community/kube-prometheus-stack -f BYOvalues.yaml \
+prometheus-community/kube-prometheus-stack -f https://raw.githubusercontent.com/javierromancsa/aks-keda-http-osm-autoscaling/main/byo_values.yaml \
 --namespace monitoring \
 --create-namespace
 ```
@@ -35,7 +35,7 @@ prometheus-community/kube-prometheus-stack -f BYOvalues.yaml \
 
 ```
 helm upgrade prometheus \
-prometheus-community/kube-prometheus-stack -f values.yaml \
+prometheus-community/kube-prometheus-stack -f https://raw.githubusercontent.com/javierromancsa/aks-keda-http-osm-autoscaling/main/byo_values.yaml \
 --namespace monitoring \
 --set kubeEtcd.enabled=false \
 --set kubeControllerManager.enabled=false \
@@ -97,12 +97,46 @@ kubectl -n projectcontour get po,svc -w
 ```
 
 ### Create HTTPProxy and ingressBackend for bookstore appplication
+#### Get the public/External IP of the Azure loadbalancer created for the Contour Services
 ```
-
+dns=".nip.io"
+myip="$(kubectl -n projectcontour describe svc -l app.kubernetes.io/component=envoy | grep -w "LoadBalancer Ingress:"| sed 's/\(\([^[:blank:]]*\)[[:blank:]]*\)*/\2/')"
+myip_dns=$myip$dns
+```
+#### Create HTTPProxy and ingressBackend
+kubectl apply -f - <<EOF
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: bookstoreproxy
+  namespace: bookstore
+spec:
+  virtualhost:
+    fqdn: $myip_dns
+  routes:
+  - services:
+    - name: bookstore
+      port: 14001
+---
+kind: IngressBackend
+apiVersion: policy.openservicemesh.io/v1alpha1
+metadata:
+  name: bookstorebackend
+  namespace: bookstore
+spec:
+  backends:
+  - name: bookstore
+    port:
+      number: 14001 # targetPort of httpbin service
+      protocol: http
+  sources:
+  - kind: Service
+    namespace: projectcontour
+    name: mycontour-contour-envoy
 ```
 
 ### Create KEDA ScaledObject based on Query
 
 ```
-
+kubectl apply -f https://raw.githubusercontent.com/javierromancsa/aks-keda-http-osm-autoscaling/main/keda_bookstore_http.yaml
 ```
