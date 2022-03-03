@@ -12,7 +12,7 @@ az aks enable-addons --addons open-service-mesh -g 'resource_group' -n 'aks_clus
 az aks show -g 'resource_group' -n 'aks_cluster-name'  --query 'addonProfiles.openServiceMesh.enabled'
 ```
 
-### Verify the status of OSM
+### Verify the status of OSM in kube-system namespace
 
 ```
 kubectl get deployments -n kube-system --selector app.kubernetes.io/name=openservicemesh.io
