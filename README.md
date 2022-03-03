@@ -134,6 +134,7 @@ spec:
   - kind: Service
     namespace: projectcontour
     name: mycontour-contour-envoy
+EOF
 ```
 
 ### Create KEDA ScaledObject based on Query
