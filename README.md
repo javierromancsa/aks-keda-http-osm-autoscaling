@@ -133,7 +133,7 @@ spec:
   sources:
   - kind: Service
     namespace: projectcontour
-    name: mycontour-contour-envoy
+    name: mycontour-envoy
 EOF
 ```
 
