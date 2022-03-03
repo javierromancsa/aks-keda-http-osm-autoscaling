@@ -93,7 +93,7 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 helm install mycontour bitnami/contour --namespace projectcontour --create-namespace
 
-kubectl -n projectcontour get po,svc -w 
+kubectl -n projectcontour get po,svc
 ```
 
 ### Create HTTPProxy and ingressBackend for bookstore appplication
